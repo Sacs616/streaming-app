@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # Databases
+  auth-db:
+    image: postgres:15-alpine
+    container_name: netflix-auth-db
+    environment:
+      POSTGRES_DB: auth_db
+      POSTGRES_USER: netflix
+      POSTGRES_PASSWORD: netflix
+    ports:
+      - "5433:5432"
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U netflix -d auth_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Auth Service
+  auth-service:
+    build:
+      context: ..
+      dockerfile: services/auth/Dockerfile
+    container_name: netflix-auth-service
+    ports:
+      - "50051:50051"
+    environment:
+      DATABASE_URL: postgres://netflix:netflix@auth-db:5432/auth_db?sslmode=disable
+      JWT_SECRET: dev-secret-key-change-in-production
+      GRPC_PORT: "50051"
+    depends_on:
+      auth-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ..
+      dockerfile: api-gateway/Dockerfile
+    container_name: netflix-api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      AUTH_SERVICE_URL: auth-service:50051
+    depends_on:
+      - auth-service
+    restart: unless-stopped
+
+volumes:
+  auth_db_data:

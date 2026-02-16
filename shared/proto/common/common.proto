@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package common;
+option go_package = "github.com/Sacs616/streaming-app/shared/proto/common";
+
+import "google/protobuf/timestamp.proto";
+
+message Response {
+  bool success = 1;
+  string message = 2;
+  ErrorDetails error = 3;
+}
+
+message ErrorDetails {
+  string code = 1;
+  string message = 2;
+  repeated string details = 3;
+}
+
+message Pagination {
+  int32 page = 1;
+  int32 page_size = 2;
+  int64 total = 3;
+}
+
+message PaginationRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message Empty {}
