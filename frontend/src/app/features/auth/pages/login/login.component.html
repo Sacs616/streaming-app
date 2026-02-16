@@ -1,0 +1,74 @@
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <img src="assets/images/logo.png" alt="Netflix" class="logo" />
+            <h1>Sign In</h1>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+            <!-- Email Field -->
+            <div class="form-group">
+                <input type="email" formControlName="email" placeholder="Email or phone number"
+                    [class.error]="f['email'].invalid && f['email'].touched" autocomplete="email" />
+                <div class="error-message" *ngIf="f['email'].invalid && f['email'].touched">
+                    <span *ngIf="f['email'].errors?.['required']">Email is required</span>
+                    <span *ngIf="f['email'].errors?.['email']">Please enter a valid email</span>
+                </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+                <div class="password-input-wrapper">
+                    <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password"
+                        [class.error]="f['password'].invalid && f['password'].touched"
+                        autocomplete="current-password" />
+                    <button type="button" class="toggle-password" (click)="togglePasswordVisibility()" tabindex="-1">
+                        {{ showPassword ? 'HIDE' : 'SHOW' }}
+                    </button>
+                </div>
+                <div class="error-message" *ngIf="f['password'].invalid && f['password'].touched">
+                    <span *ngIf="f['password'].errors?.['required']">Password is required</span>
+                    <span *ngIf="f['password'].errors?.['minlength']">
+                        Password must be at least 6 characters
+                    </span>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message error-banner" *ngIf="error">
+                <svg class="error-icon" viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+                </svg>
+                {{ error }}
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-primary" [disabled]="loading">
+                <span *ngIf="!loading">Sign In</span>
+                <span *ngIf="loading" class="loading-spinner"></span>
+            </button>
+
+            <!-- Remember Me -->
+            <div class="form-options">
+                <label class="checkbox-label">
+                    <input type="checkbox" formControlName="rememberMe" />
+                    <span>Remember me</span>
+                </label>
+                <a routerLink="/forgot-password" class="link">Need help?</a>
+            </div>
+        </form>
+
+        <!-- Sign Up Link -->
+        <div class="auth-footer">
+            <p class="signup-text">
+                New to Netflix?
+                <a routerLink="/register" class="link-bold">Sign up now</a>.
+            </p>
+            <p class="recaptcha-text">
+                This page is protected by Google reCAPTCHA to ensure you're not a bot.
+                <a href="#" class="link">Learn more</a>.
+            </p>
+        </div>
+    </div>
+</div>
