@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package video;
+option go_package = "github.com/Sacs616/streaming-app/services/video/proto";
+
+import "google/protobuf/timestamp.proto";
+import "shared/proto/common/common.proto";
+
+service VideoService {
+  rpc CreateVideo(CreateVideoRequest) returns (CreateVideoResponse);
+  rpc GetVideo(GetVideoRequest) returns (GetVideoResponse);
+  rpc ListVideos(ListVideosRequest) returns (ListVideosResponse);
+  rpc UpdateVideo(UpdateVideoRequest) returns (UpdateVideoResponse);
+  rpc DeleteVideo(DeleteVideoRequest) returns (common.Response);
+  rpc IncrementViewCount(IncrementViewCountRequest) returns (common.Response);
+}
+
+enum VideoStatus {
+  VIDEO_STATUS_UNKNOWN = 0;
+  VIDEO_STATUS_PENDING = 1;
+  VIDEO_STATUS_TRANSCODING = 2;
+  VIDEO_STATUS_READY = 3;
+  VIDEO_STATUS_FAILED = 4;
+}
+
+message Video {
+  uint64 id = 1;
+  string title = 2;
+  string description = 3;
+  uint64 uploaded_by = 4;
+  int32 duration = 5;                    // in seconds
+  string thumbnail_url = 6;
+  string hls_manifest = 7;               // URL to .m3u8 file
+  VideoStatus status = 8;
+  uint64 category_id = 9;
+  int32 view_count = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+}
+
+message CreateVideoRequest {
+  string title = 1;
+  string description = 2;
+  uint64 uploaded_by = 3;
+  uint64 category_id = 4;
+}
+
+message CreateVideoResponse {
+  Video video = 1;
+}
+
+message GetVideoRequest {
+  uint64 id = 1;
+}
+
+message GetVideoResponse {
+  Video video = 1;
+}
+
+message ListVideosRequest {
+  common.PaginationRequest pagination = 1;
+  uint64 category_id = 2;                // Filter by category (optional)
+  VideoStatus status = 3;                 // Filter by status (optional)
+}
+
+message ListVideosResponse {
+  repeated Video videos = 1;
+  common.Pagination pagination = 2;
+}
+
+message UpdateVideoRequest {
+  uint64 id = 1;
+  string title = 2;
+  string description = 3;
+  VideoStatus status = 4;
+  string thumbnail_url = 5;
+  string hls_manifest = 6;
+  int32 duration = 7;
+}
+
+message UpdateVideoResponse {
+  Video video = 1;
+}
+
+message DeleteVideoRequest {
+  uint64 id = 1;
+}
+
+message IncrementViewCountRequest {
+  uint64 id = 1;
+}

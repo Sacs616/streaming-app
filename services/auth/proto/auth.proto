@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package auth;
-option go_package = "github.com/Sacs616/streaming-app/services/auth/proto/auth";
+option go_package = "github.com/Sacs616/streaming-app/services/auth/proto";
 
 import "google/protobuf/timestamp.proto";
 import "shared/proto/common/common.proto";
